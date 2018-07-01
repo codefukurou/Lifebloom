@@ -1,0 +1,26 @@
+rule(
+    F:FF-[-F+F+F]+[+F-F-F]
+);
+function(
+    F:draw{1},
+    [:store{1},
+    ]:store{0},
+    -:theta{-22},
+    +:theta{+22}
+);
+init(
+    hue{0},
+    saturation{0.0},
+    value{0.0},
+    alpha{1.0},
+    theta{0},
+    phi{90},
+    length{10},
+    width{1}
+);
+axiom(
+    F
+);
+level(
+    4
+);
