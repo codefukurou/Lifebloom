@@ -6,7 +6,7 @@ BIN_DIR := bin
 SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
 LDFLAGS := -lGL -lGLU -lglut -lGLEW -lX11 -lXxf86vm -lXrandr -lpthread -lXi -ldl -lXinerama -lXcursor
-CPPFLAGS := -Isrc -Ilib -Wall -std=c++17 -O2 -g -pedantic
+CPPFLAGS := -Isrc -Iinclude -Wall -std=c++17 -O2 -g -pedantic
 
 all: directory $(BIN_DIR)/main.out
 

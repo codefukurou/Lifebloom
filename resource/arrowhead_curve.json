@@ -1,0 +1,21 @@
+{
+  "name": "Arrowhead Curve",
+  "type": "cartesian-2d",
+  "axiom": "XF",
+  "level": 7,
+  "rules": {
+      "X": "YF+XF+Y",
+      "Y": "XF-YF-X"
+  },
+  "functions": {
+      "F": {
+          "draw": true
+      },
+      "+": {
+          "theta": 60.0
+      },
+      "-": {
+          "theta": -60.0
+      }
+  }
+}       

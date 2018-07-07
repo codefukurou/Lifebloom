@@ -1,23 +1,28 @@
-#include<cmath>
-#include<algorithm>
+// color.hpp - Utility functions for color conversion
+// Copyright (C) 2018 Benjamin Lewis
 
-using namespace std;
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 
-struct rgba;
-struct hsva;
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
-struct rgba{
-    float r, g, b, a;
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-    rgba(void);
-    rgba(float _r_, float _g_, float _b_, float _a_);
-    rgba(hsva input);
-};
+#ifndef COLOR_HPP
+#define COLOR_HPP
 
-struct hsva{
-    float h, s, v, a;
+#include <GL/gl.h>
+#include <glm/glm.hpp>
+#include <cmath>
 
-    hsva(void);
-    hsva(float _h_, float _s_, float _v_, float _a_);
-    hsva(rgba input);
-};
+using namespace glm;
+
+dvec3 hsl2rgb(dvec3 input);
+
+#endif

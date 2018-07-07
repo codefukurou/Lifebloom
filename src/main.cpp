@@ -1,28 +1,36 @@
-#include"LSystem.hpp"
+// main.cpp - Main entry point for program
+// Copyright (C) 2018 Benjamin Lewis
 
-LSystem lsys;
-ViewWindow view_window;
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 
-void drawlsys(void){
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(1.0f,1.0f,1.0f, 1.0f);
-    
-    lsys.draw();
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
-    glFlush();
-}
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-int main(int argc, char *argv[]) {
-    lsys.construct();
-    view_window = lsys.generateViewWindow();
-    view_window.scale(1.1);
+#include "lsystem.hpp"
 
-    // cout << view_window.x_min << " " << view_window.x_max << " " << view_window.y_min << " " << view_window.y_max << endl;
+int main( int argc, char **argv )
+{
+  glutInit( &argc, argv );
 
-    initWindow(500,500,"L-System",drawlsys,fitReshape);
+  string filename;
+  if(argc > 1){
+    filename = argv[1];
+  }else{
+    filename = "resource/twin_dragon.json";
+  }
 
-    drawlsys();
+  LSystem lsystem;
+  lsystem.loadFile(filename);
+  lsystem.construct();
+  lsystem.draw();
 
-    glutMainLoop();
-    return 0;
+  return 0;
 }

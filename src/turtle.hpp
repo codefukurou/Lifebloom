@@ -1,4 +1,4 @@
-// lsystem.hpp - Implemention of an lsystem class
+// turtle.hpp - Implemention of a turtle graphics class
 // Copyright (C) 2018 Benjamin Lewis
 
 // This program is free software: you can redistribute it and/or modify
@@ -14,40 +14,46 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef LSYSTEM_HPP
-#define LSYSTEM_HPP
+#ifndef TURTLE_HPP
+#define TURTLE_HPP
 
-#include <rapidjson/filereadstream.h> 
-#include <rapidjson/document.h>
+#include <GL/gl.h>
 #include <glm/glm.hpp>
-#include <cstdio>
-#include <iostream>
-#include <functional>
+#include <glm/gtc/type_ptr.hpp>
+#include <cmath>
 #include <map>
+#include <vector>
+#include <functional>
+#include <string>
+#include <iostream>
+#include <stack>
 #include "color.hpp"
-#include "turtle.hpp"
-#include "canvas.hpp"
 
 using namespace glm;
-using namespace rapidjson;
 using namespace std;
 
-class LSystem {
+class Turtle {
 public:
-  LSystem();
-  void loadFile(const string& filename);
-  void construct();
-  void draw();
-  friend void drawLSystem(void);
+  Turtle();
+  void addFunction(char c, string label, double param);
+  void initState();
+  void setState(string label, double value);
+  void generateDrawList(string word);
+  function<void()> getDrawFunction();
 
 private:
-  Turtle m_turtle;
-  Canvas m_canvas;
-  map<char,string> m_rmap;
-  string m_name, m_axiom, m_type;
-  uint m_level;
+  struct glLine {
+    dvec3 color;
+    dvec2 vertA;
+    dvec2 vertB;
+    double width;
+  };
 
-  string expandSystem();
+  map<char,vector<function<void()>>> m_fmap;
+  map<string,double> m_state;
+  stack<map<string,double>> m_sstack;
+  vector<glLine> m_lines;
+
 };
 
 #endif

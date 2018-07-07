@@ -1,130 +1,52 @@
-#include"Color.hpp"
+// color.cpp - Utility functions for color conversion
+// Copyright (C) 2018 Benjamin Lewis
 
-rgba::rgba(void) {
-    r = 0;
-    g = 0;
-    b = 0;
-    a = 1;
-}
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 
-rgba::rgba(float _r_, float _g_, float _b_, float _a_) {
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
-    r = max(min(_r_,1.0f),0.0f);
-    g = max(min(_g_,1.0f),0.0f);
-    b = max(min(_b_,1.0f),0.0f);
-    a = max(min(_a_,1.0f),0.0f);
-}
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-rgba::rgba(hsva input) {
-    float      hh, p, q, t, ff;
-    long        i;
+#include "color.hpp"
 
-    a = input.a;
+dvec3 hsl2rgb(dvec3 input){
+    // Adjust values for range
+    double H = fmod(input[0],360.0)/60.0;
+    double S = min(max(input[1],0.0),100.0)/100.0;
+    double L = min(max(input[2],0.0),100.0)/100.0;
 
-    if(input.s <= 0.0) {       // < is bogus, just shuts up warnings
-        r = input.v;
-        g = input.v;
-        b = input.v;
-        return;
-    }
-    hh = input.h;
-    if(hh >= 360.0) hh = 0.0;
-    hh /= 60.0;
-    i = (long)hh;
-    ff = hh - i;
-    p = input.v * (1.0 - input.s);
-    q = input.v * (1.0 - (input.s * ff));
-    t = input.v * (1.0 - (input.s * (1.0 - ff)));
+    // Create variables
+    double C = (1.0 - fabs(2 * L - 1.0)) * S;
+	double X = C * (1.0 - fabs(fmod(H, 2) - 1.0));
+	double m = 1.0 * (L - 0.5 * C);
 
-    switch(i) {
-    case 0:
-        r = input.v;
-        g = t;
-        b = p;
-        break;
-    case 1:
-        r = q;
-        g = input.v;
-        b = p;
-        break;
-    case 2:
-        r = p;
-        g = input.v;
-        b = t;
-        break;
+    dvec3 output(m, m, m);
 
-    case 3:
-        r = p;
-        g = q;
-        b = input.v;
-        break;
-    case 4:
-        r = t;
-        g = p;
-        b = input.v;
-        break;
-    case 5:
-    default:
-        r = input.v;
-        g = p;
-        b = q;
-        break;
-    }
-}
+	if(H < 1.0){
+		output[0] += C; output[1] += X;
+	}else 
+    if(H < 2.0){
+		output[0] += X; output[1] += C;
+	}else 
+    if(H < 3.0){
+		output[1] += C; output[2] += X;
+	}else 
+    if(H < 4.0){
+		output[1] += X; output[2] += C;
+	}else 
+    if(H < 5.0){
+		output[0] += X; output[2] += C;
+	}else 
+    if(H < 6.0){
+		output[0] += C; output[2] += X;
+	}
 
-hsva::hsva(void) {
-    h = 0;
-    s = 0;
-    v = 0;
-    a = 1;
-}
-
-hsva::hsva(float _h_, float _s_, float _v_, float _a_) {
-    h = fmod(_h_,360);
-    s = max(min(_s_,1.0f),0.0f);
-    v = max(min(_v_,1.0f),0.0f);
-    a = max(min(_a_,1.0f),0.0f);
-}
-
-hsva::hsva(rgba input) {
-    float      min, max, delta;
-
-    a = input.a;
-
-    min = input.r < input.g ? input.r : input.g;
-    min = min  < input.b ? min  : input.b;
-
-    max = input.r > input.g ? input.r : input.g;
-    max = max  > input.b ? max  : input.b;
-
-    v = max;                                // v
-    delta = max - min;
-    if (delta < 0.00001)
-    {
-        s = 0;
-        h = 0; // undefined, maybe nan?
-        return;
-    }
-    if( max > 0.0 ) { // NOTE: if Max is == 0, this divide would cause a crash
-        s = (delta / max);                  // s
-    } else {
-        // if max is 0, then r = g = b = 0              
-        // s = 0, h is undefined
-        s = 0.0;
-        h = NAN;                            // its now undefined
-        return;
-    }
-    if( input.r >= max )                           // > is bogus, just keeps compilor happy
-        h = ( input.g - input.b ) / delta;        // between yellow & magenta
-    else
-    if( input.g >= max )
-        h = 2.0 + ( input.b - input.r ) / delta;  // between cyan & yellow
-    else
-        h = 4.0 + ( input.r - input.g ) / delta;  // between magenta & cyan
-
-    h *= 60.0;                              // degrees
-
-    if( h < 0.0 )
-        h += 360.0;
-
+    return output;
 }
