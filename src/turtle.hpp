@@ -17,9 +17,13 @@
 #ifndef TURTLE_HPP
 #define TURTLE_HPP
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <GL/gl.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_access.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 #include <cmath>
 #include <map>
 #include <vector>
@@ -35,13 +39,15 @@ using namespace std;
 class Turtle {
 public:
   Turtle();
-  void addFunction(char c, string label, double param);
-  void initState();
-  void setState(string label, double value);
-  void generateDrawList(string word);
+  void processWord(const string& word);
   function<void()> getDrawFunction();
 
 private:
+  // Direction vector indicies
+  enum {
+    HEAD, LEFT, UP
+  };
+
   struct glLine {
     dvec3 color;
     dvec2 vertA;
@@ -49,10 +55,21 @@ private:
     double width;
   };
 
-  map<char,vector<function<void()>>> m_fmap;
-  map<string,double> m_state;
-  stack<map<string,double>> m_sstack;
+  struct State {
+    dvec3   position;
+    dmat3x4 direction;
+    double  diameter;
+    int     color_index;
+  };
+
+  map<char,function<void(double)>> m_functions;
+  map<char,double> m_defaults;
+  State m_state;
+  stack<State> m_statestack;
   vector<glLine> m_lines;
+
+  // Assign turtle functions
+  void constructFunctionMap();
 
 };
 

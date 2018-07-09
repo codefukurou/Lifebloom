@@ -14,23 +14,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "lsystem.hpp"
+#include "turtle.hpp"
+#include "canvas.hpp"
 
 int main( int argc, char **argv )
 {
   glutInit( &argc, argv );
 
-  string filename;
-  if(argc > 1){
-    filename = argv[1];
-  }else{
-    filename = "resource/twin_dragon.json";
-  }
+  Canvas canvas;
+  Turtle turtle;
 
-  LSystem lsystem;
-  lsystem.loadFile(filename);
-  lsystem.construct();
-  lsystem.draw();
+  canvas.setDrawFunction(turtle.getDrawFunction());
+
+  canvas.draw();
+
+  // string filename;
+  // if(argc > 1){
+  //   filename = argv[1];
+  // }else{
+  //   filename = "resource/twin_dragon.json";
+  // }
+
+  // LSystem lsystem;
+  // lsystem.loadFile(filename);
+  // lsystem.construct();
+  // lsystem.draw();
 
   return 0;
 }

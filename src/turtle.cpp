@@ -17,66 +17,38 @@
 #include "turtle.hpp"
 
 Turtle::Turtle(){
-  initState();
+  constructFunctionMap();
+  m_state.position = dvec3(0,0,0);
+  m_state.direction = dmat3x4(1,0,0,
+                              0,1,0,
+                              0,0,0,
+                              1,1,1);
+  processWord("F(1.25)+F(0.75)--F+(180)F(0.50)F");
 }
 
-void Turtle::addFunction(char c, string label, double param){
-  m_fmap[c].push_back([&,label,param](void){
-    if(label == "draw"){
-      
-      double dx = m_state["x"] + m_state["length"]*cos(m_state["theta"]*(M_PI/180));
-      double dy = m_state["y"] + m_state["length"]*sin(m_state["theta"]*(M_PI/180));
-      
-      if(param==1) {
-        glLine line;
-        
-        line.color = hsl2rgb(dvec4(m_state["hue"], m_state["saturation"], m_state["lightness"], m_state["alpha"]));
-        line.vertA = dvec2(m_state["x"], m_state["y"]);
-        line.vertB = dvec2(dx, dy);
-        line.width = m_state["width"];
-        
-        m_lines.push_back(line);
-      }
-      
-      m_state["x"] = dx;
-      m_state["y"] = dy;
-      
-    } else if(label == "store") {
-      
-      if(param){
-        m_sstack.push(m_state);
-      }else{
-        m_state = m_sstack.top();
-        m_sstack.pop();
-      }
+//Sample word: F(1.25)+F(0.75)--F+(180)F(0.50)
 
+void Turtle::processWord(const string& word){
+  string::size_type sz;
+  string token;
+  char symbol; 
+  double argument;
+
+  string::size_type i = 0;
+  while( i < word.length()){
+    if (word[(i+1)] == '(') {
+      token = word.substr(i, word.find(')',i) - i + 1);
+      symbol = token[0];
+      argument = stod(token.substr(2,token.size() - 3) , &sz);
+      i += token.length();
     } else {
-      m_state[label] += param;
+      symbol = word[i];
+      argument = m_defaults[symbol];
+      i += 1;
     }
-  });
-}
-
-void Turtle::initState(){
-  m_state["hue"]          =   0;
-  m_state["saturation"]   =   0;
-  m_state["lightness"]    =  15;
-  m_state["theta"]        =   0;
-  m_state["length"]       =  10;
-  m_state["x"]            =   0;
-  m_state["y"]            =   0;
-}
-
-void Turtle::setState(string label, double value){
-  m_state[label] = value;
-}
-
-void Turtle::generateDrawList(string word){
-  for(char &c: word){
-    if(m_fmap.find(c) != m_fmap.end()){
-      for(function<void()> f: m_fmap[c]){
-        f();
-      }
-    }
+    cout << symbol << ":" << argument << endl;
+    m_functions[symbol](argument);
+    cout << m_state.position[0] << "," << m_state.position[1] << "," << m_state.position[2] << endl;
   }
 }
 
@@ -92,3 +64,109 @@ function<void()> Turtle::getDrawFunction(){
 
   });
 }
+
+void Turtle::constructFunctionMap(){
+  m_functions['F'] = [&](double value){
+    // Get appropiate line data...
+    dvec3 end_point = m_state.position + value * dvec3(m_state.direction[HEAD]);
+    dvec3 color(0.15, 0.15, 0.15); //default, colour maps will come later
+    
+    // Create line and push it to the draw vector...
+    glLine line = {color, m_state.position, end_point, m_state.diameter};
+    m_lines.push_back(line);
+
+    // Move turtle forward...
+    m_state.position = end_point;
+  };
+  m_defaults['F'] = 1.0;
+
+  m_functions['f'] = [&](double value){
+    m_state.position += value * dvec3(m_state.direction[HEAD]);
+  };
+  m_defaults['f'] = 1.0;
+
+  m_functions['+'] = [&](double value){
+    m_state.direction = rotate(+value, dvec3(m_state.direction[UP]))*m_state.direction;
+  };
+  m_defaults['+'] = 90.0;
+
+  m_functions['-'] = [&](double value){
+    m_state.direction = rotate(-value, dvec3(m_state.direction[UP]))*m_state.direction;
+  };
+  m_defaults['-'] = 90.0;
+
+  m_functions['^'] = [&](double value){
+    m_state.direction = rotate(+value, dvec3(m_state.direction[LEFT]))*m_state.direction;
+  };
+  m_defaults['^'] = 90.0;
+
+  m_functions['&'] = [&](double value){
+    m_state.direction = rotate(-value, dvec3(m_state.direction[LEFT]))*m_state.direction;
+  };
+  m_defaults['&'] = 90.0;
+
+  m_functions['<'] = [&](double value){
+    m_state.direction = rotate(+value, dvec3(m_state.direction[HEAD]))*m_state.direction;
+  };
+  m_defaults['<'] = 90.0;
+
+  m_functions['>'] = [&](double value){
+    m_state.direction = rotate(-value, dvec3(m_state.direction[HEAD]))*m_state.direction;
+  };
+  m_defaults['>'] = 90.0;
+
+  m_functions['|'] = [&](double value){
+    m_state.direction = rotate( 180.0, dvec3(m_state.direction[HEAD]))*m_state.direction;
+  };
+  m_defaults['|'] = 0.0;
+
+  m_functions['$'] = [&](double value){
+    m_state.direction[LEFT] = dvec4(normalize(cross(dvec3(0,0,1), dvec3(m_state.direction[HEAD]))),1);
+    m_state.direction[UP] = dvec4(cross(dvec3(m_state.direction[HEAD]), dvec3(m_state.direction[LEFT])),1);
+  };
+  m_defaults['$'] = 0.0;
+
+  m_functions['['] = [&](double value){
+    m_statestack.push(m_state);
+  };
+  m_defaults['['] = 0.0;
+
+  m_functions[']'] = [&](double value){
+    m_state = m_statestack.top();
+    m_statestack.pop();
+  };
+  m_defaults[']'] = 0.0;
+
+  m_functions['!'] = [&](double value){
+    m_state.diameter -= value;
+  };
+  m_defaults['!'] = 1.0;
+
+  m_functions['`'] = [&](double value){
+    m_state.color_index += (int)round(value);
+  };
+  m_defaults['`'] = 1.0;
+
+  // The following functions will be defined at a later date ()
+
+  // m_functions['{'] = [&](double value){
+    
+  // };
+
+  // m_functions['}'] = [&](double value){
+    
+  // };
+
+  // m_functions['G'] = [&](double value){
+    
+  // };
+
+  // m_functions['.'] = [&](double value){
+    
+  // };
+
+  // m_functions['~'] = [&](double value){
+    
+  // };
+}
+
