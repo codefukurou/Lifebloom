@@ -36,40 +36,68 @@
 using namespace glm;
 using namespace std;
 
+struct glLine {
+  dvec3 color;
+  dvec3 vertA;
+  dvec3 vertB;
+  double width;
+};
+
 class Turtle {
 public:
   Turtle();
   void processWord(const string& word);
   function<void()> getDrawFunction();
 
-private:
-  // Direction vector indicies
-  enum {
-    HEAD, LEFT, UP
-  };
-
-  struct glLine {
-    dvec3 color;
-    dvec2 vertA;
-    dvec2 vertB;
-    double width;
-  };
-
-  struct State {
-    dvec3   position;
-    dmat3x4 direction;
-    double  diameter;
-    int     color_index;
-  };
-
+protected:
   map<char,function<void(double)>> m_functions;
   map<char,double> m_defaults;
+  vector<glLine> m_lines;
+  
+  virtual void constructFunctionMap();
+};
+
+class TurtleCartesian2D : public Turtle {
+public:
+  TurtleCartesian2D();
+    
+protected:
+  void constructFunctionMap();
+
+private:
+  struct State {
+    dvec2 position;
+    dvec2 direction;
+    double diameter;
+    int color_index;
+
+    State();
+  };
+  
   State m_state;
   stack<State> m_statestack;
-  vector<glLine> m_lines;
 
-  // Assign turtle functions
+};
+
+class TurtleCartesian3D : public Turtle {
+public:
+  TurtleCartesian3D();
+
+protected:
   void constructFunctionMap();
+
+private:
+  struct State {
+    dvec3 position;
+    dmat3x4 direction;
+    double diameter;
+    int color_index;
+
+    State();
+  };
+  
+  State m_state;
+  stack<State> m_statestack;
 
 };
 

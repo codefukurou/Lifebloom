@@ -84,7 +84,7 @@ void LSystem::loadFile(const string& filename){
   if(document.HasMember("init")){
     for (auto& member: document["init"].GetObject()){
       assert(member.value.IsInt()||member.value.IsDouble());
-      m_turtle.setState(member.name.GetString(),member.value.GetDouble());
+      // m_turtle.setState(member.name.GetString(),member.value.GetDouble());
     }
   }
 
@@ -103,13 +103,13 @@ void LSystem::loadFile(const string& filename){
       }else{
         param = action.value.GetFloat();
       }
-      m_turtle.addFunction(c, label, param);
+      // m_turtle.addFunction(c, label, param);
     }
   }
 }
 
 void LSystem::construct(){
-  m_turtle.generateDrawList(expandSystem());
+  m_turtle.processWord(generateWord());
 }
 
 void LSystem::draw(){
@@ -117,7 +117,7 @@ void LSystem::draw(){
   m_canvas.draw();
 }
 
-string LSystem::expandSystem(){
+string LSystem::generateWord(){
   string word = m_axiom;
   string temp;
   uint layer = m_level;

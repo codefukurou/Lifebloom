@@ -1,48 +1,26 @@
 # **lsystem** - Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.1.2] - 2018-10-07
-### Added
+## [0.1.2] Standardised Turtle Symbols
 
-- `enum` for direction vector indices (`HEAD`, `LEFT`, `UP`).
-- `map<char,double> Turtle::m_defaults` for default function arguments.
-- `Turtle::constructFunctionMap()` to define functions for symbols and their defaults.
+### 2018-10-07 (9:10PM - UTC+10H)
 
-### Changed
+- Class `Turtle` is now abstract and is accompanied by two polymorphic classes `TurtleCartesian2D` and `TurtleCartesian3D` which are tuned to handle 2D and 3D instruction sets respectively (3D is currently not functional but will be resolved towards the end of `0.1.x` or at the start of `0.2.x`).
+- The format for the new L-system interpreter is now finalised (an example can be found in `resource/test.json`). There will likely be tweaks to this as time continues.
+- Work on `0.1.3` has commenced with the design of the construction rule interpreter for the advanced grammars update.
+- Condensed changelog format to a concise, non-specific format such as this entry, the old format was tedious to write and (mostly not worth the effort).
 
-- `Turtle::m_state` is now a custom `struct State` with members `position`, `direction`, `diameter` and `color` instead of a `map<string,double>`.
-- `Turtle::generateDrawList(string word)` is now called `Turtle::processWord(const string& word)` 
-- `map<char,vector<function<void()>>> Turtle::m_fmap` renamed and retyped to `map<char,function<void(double)>> Turtle::m_functions`
-- 
+### 2018-10-07 (2:40AM - UTC+10H)
 
-### Removed
+- Simplifications and improvements made to `turtle.hpp` to interface with a set of predetermined instructions. As such, custom functions can not be added to the class `Turtle` (there will be no need for custom functions with the implementation of advanced grammars).
+- `lsystem.hpp` is currently not functional as it relies on function calls removed from `turtle.hpp` (`lsystem.hpp` is planned to be functional at the end of `0.1.3` with the advanced grammars implemented).
 
-- `Turtle::addFunction(char c, string label, double param)` (turtle functions are now predetermined).
-- `Turtle::initState()` - Soon to be done with `struct State` constructor
-- `Turtle::setState()` - Soon to be done with `struct State` constructor
-- 
+## [0.1.1] JSON Compatibility
 
-### Notes
+### 2018-08-07 (5:50AM - UTC+10H)
 
-- `lsystem.hpp` is currently not functional (it relies on function calls removed from `turtle.hpp`)
-
-## [0.1.1] - 2018-08-07
-### Added
-
-* Sample L-systems (see `resources/*.json`)
-* `CHANGELOG.md` to track changes and progress.
-* `ROADMAP.md` to plan new feature.
-* `USAGE.md` to explain how to use the program (currently uncompleted on the basis that the `.json` interface will likely change dramatically in the near future).
-
-### Changed
-
-* Changed custom `.lsystem` file parser to a popular `.json` parser (rapidjson) for flexibility and expandability in the future.
-* Restructured most of the existing code to fit the new parser.
-* General cleaning and optimization.
-* Updated `LICENSE.md` to be markdown friendly.
-* Added licenses to all source code files.
-
-### Removed
-
-* A number of old (unnecessary) classes were removed (or replaced).
-* Old `.lsystem` files that are now incompatible.
+- Sample L-systems to demonstrate the current functionality of the program have been added in `resources`.
+- Added `doc/CHANGELOG.md`, `doc/ROADMAP.md` and `doc/USAGE.md` for improved documentation.
+- Changed custom `.lsystem` file parser to a popular `.json` parser (rapidjson) for flexibility and expandability in the future.
+- Restructured most of the existing code to fit the new parser.
+- Updated `LICENSE.md` to be markdown friendly and added licenses to all source code files.

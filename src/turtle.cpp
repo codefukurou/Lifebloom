@@ -16,17 +16,10 @@
 
 #include "turtle.hpp"
 
-Turtle::Turtle(){
-  constructFunctionMap();
-  m_state.position = dvec3(0,0,0);
-  m_state.direction = dmat3x4(1,0,0,
-                              0,1,0,
-                              0,0,0,
-                              1,1,1);
-  processWord("F(1.25)+F(0.75)--F+(180)F(0.50)F");
-}
+// Turtle::
 
-//Sample word: F(1.25)+F(0.75)--F+(180)F(0.50)
+Turtle::Turtle(){
+}
 
 void Turtle::processWord(const string& word){
   string::size_type sz;
@@ -46,9 +39,7 @@ void Turtle::processWord(const string& word){
       argument = m_defaults[symbol];
       i += 1;
     }
-    cout << symbol << ":" << argument << endl;
     m_functions[symbol](argument);
-    cout << m_state.position[0] << "," << m_state.position[1] << "," << m_state.position[2] << endl;
   }
 }
 
@@ -61,14 +52,122 @@ function<void()> Turtle::getDrawFunction(){
       glVertex2dv(value_ptr( l.vertB ));
     }
     glEnd();
-
   });
 }
 
 void Turtle::constructFunctionMap(){
+}
+
+// TurtleCartesian2D
+
+TurtleCartesian2D::TurtleCartesian2D(){
+  constructFunctionMap();
+}
+
+TurtleCartesian2D::State::State():
+    position(0.0, 0.0),
+    direction(1.0, 0.0),
+    diameter(1.0),
+    color_index(0)   
+{
+}
+
+void TurtleCartesian2D::constructFunctionMap(){
+  // [#TODO] - Adapt for 2D usage...
   m_functions['F'] = [&](double value){
     // Get appropiate line data...
-    dvec3 end_point = m_state.position + value * dvec3(m_state.direction[HEAD]);
+    dvec2 end_point = m_state.position + value * m_state.direction;
+    dvec3 color(0.15, 0.15, 0.15); //default, colour maps will come later
+    
+    // Create line and push it to the draw vector...
+    glLine line = {color, dvec3(m_state.position,1.0), dvec3(end_point,1.0), m_state.diameter};
+    m_lines.push_back(line);
+
+    // Move turtle forward...
+    m_state.position = end_point;
+  };
+  m_defaults['F'] = 1.0;
+
+  m_functions['f'] = [&](double value){
+    m_state.position += value * m_state.direction;
+  };
+  m_defaults['f'] = 1.0;
+
+  m_functions['+'] = [&](double value){
+    m_state.direction = rotate(m_state.direction,+value*(M_PI/180));
+  };
+  m_defaults['+'] = 90.0;
+
+  m_functions['-'] = [&](double value){
+    m_state.direction = rotate(m_state.direction,-value*(M_PI/180));
+  };
+  m_defaults['-'] = 90.0;
+
+  m_functions['|'] = [&](double value){
+    m_state.direction = rotate(m_state.direction,+180.0);
+  };
+  m_defaults['|'] = 0.0;
+
+  m_functions['['] = [&](double value){
+    m_statestack.push(m_state);
+  };
+  m_defaults['['] = 0.0;
+
+  m_functions[']'] = [&](double value){
+    m_state = m_statestack.top();
+    m_statestack.pop();
+  };
+  m_defaults[']'] = 0.0;
+
+  m_functions['!'] = [&](double value){
+    m_state.diameter -= value;
+  };
+  m_defaults['!'] = 1.0;
+
+  m_functions['`'] = [&](double value){
+    m_state.color_index += (int)round(value);
+  };
+  m_defaults['`'] = 1.0;
+
+  // The following functions will be defined at a later date ()
+
+  // m_functions['{'] = [&](double value){
+  // };
+
+  // m_functions['}'] = [&](double value){
+  // };
+
+  // m_functions['G'] = [&](double value){
+  // };
+
+  // m_functions['.'] = [&](double value){
+  // };
+
+  // m_functions['~'] = [&](double value){
+  // };
+}
+
+// TurtleCartesian3D
+
+TurtleCartesian3D::TurtleCartesian3D(){
+  constructFunctionMap();
+}
+
+TurtleCartesian3D::State::State():
+    position(0.0, 0.0, 0.0),
+    direction(1.0, 0.0, 0.0,
+              0.0, 1.0, 0.0,
+              0.0, 0.0, 1.0,
+              1.0, 1.0, 1.0),
+    diameter(1.0),
+    color_index(0)   
+{
+}
+
+void TurtleCartesian3D::constructFunctionMap(){
+  m_functions['F'] = [&](double value){
+    // Get appropiate line data...
+    dvec3 end_point = m_state.position + value * dvec3(m_state.direction[0]);
     dvec3 color(0.15, 0.15, 0.15); //default, colour maps will come later
     
     // Create line and push it to the draw vector...
@@ -81,48 +180,48 @@ void Turtle::constructFunctionMap(){
   m_defaults['F'] = 1.0;
 
   m_functions['f'] = [&](double value){
-    m_state.position += value * dvec3(m_state.direction[HEAD]);
+    m_state.position += value * dvec3(m_state.direction[0]);
   };
   m_defaults['f'] = 1.0;
 
   m_functions['+'] = [&](double value){
-    m_state.direction = rotate(+value, dvec3(m_state.direction[UP]))*m_state.direction;
+    m_state.direction = rotate(+value*(M_PI/180), dvec3(m_state.direction[2]))*m_state.direction;
   };
   m_defaults['+'] = 90.0;
 
   m_functions['-'] = [&](double value){
-    m_state.direction = rotate(-value, dvec3(m_state.direction[UP]))*m_state.direction;
+    m_state.direction = rotate(-value, dvec3(m_state.direction[2]))*m_state.direction;
   };
   m_defaults['-'] = 90.0;
 
   m_functions['^'] = [&](double value){
-    m_state.direction = rotate(+value, dvec3(m_state.direction[LEFT]))*m_state.direction;
+    m_state.direction = rotate(+value, dvec3(m_state.direction[1]))*m_state.direction;
   };
   m_defaults['^'] = 90.0;
 
   m_functions['&'] = [&](double value){
-    m_state.direction = rotate(-value, dvec3(m_state.direction[LEFT]))*m_state.direction;
+    m_state.direction = rotate(-value, dvec3(m_state.direction[1]))*m_state.direction;
   };
   m_defaults['&'] = 90.0;
 
   m_functions['<'] = [&](double value){
-    m_state.direction = rotate(+value, dvec3(m_state.direction[HEAD]))*m_state.direction;
+    m_state.direction = rotate(+value, dvec3(m_state.direction[0]))*m_state.direction;
   };
   m_defaults['<'] = 90.0;
 
   m_functions['>'] = [&](double value){
-    m_state.direction = rotate(-value, dvec3(m_state.direction[HEAD]))*m_state.direction;
+    m_state.direction = rotate(-value, dvec3(m_state.direction[0]))*m_state.direction;
   };
   m_defaults['>'] = 90.0;
 
   m_functions['|'] = [&](double value){
-    m_state.direction = rotate( 180.0, dvec3(m_state.direction[HEAD]))*m_state.direction;
+    m_state.direction = rotate( 180.0, dvec3(m_state.direction[0]))*m_state.direction;
   };
   m_defaults['|'] = 0.0;
 
   m_functions['$'] = [&](double value){
-    m_state.direction[LEFT] = dvec4(normalize(cross(dvec3(0,0,1), dvec3(m_state.direction[HEAD]))),1);
-    m_state.direction[UP] = dvec4(cross(dvec3(m_state.direction[HEAD]), dvec3(m_state.direction[LEFT])),1);
+    m_state.direction[1] = dvec4(normalize(cross(dvec3(0,0,1), dvec3(m_state.direction[0]))),1);
+    m_state.direction[2] = dvec4(cross(dvec3(m_state.direction[0]), dvec3(m_state.direction[1])),1);
   };
   m_defaults['$'] = 0.0;
 
@@ -169,4 +268,3 @@ void Turtle::constructFunctionMap(){
     
   // };
 }
-

@@ -1,3 +1,4 @@
+
 // main.cpp - Main entry point for program
 // Copyright (C) 2018 Benjamin Lewis
 
@@ -16,17 +17,44 @@
 
 #include "turtle.hpp"
 #include "canvas.hpp"
+#include <regex>
+#include <vector>
+#include <string>
+#include <sstream>
+
+using namespace std;
 
 int main( int argc, char **argv )
 {
   glutInit( &argc, argv );
 
-  Canvas canvas;
-  Turtle turtle;
+  // string input;
+  // if(argc > 1){
+  //   input = argv[1];
+  // }else{
+  //   return 0;
+  // }
 
-  canvas.setDrawFunction(turtle.getDrawFunction());
-
-  canvas.draw();
+  // //  "symbol:condition->result"
+  // // Converting advanced production rules into logical data structures...
+  // // split string by "->"
+  // string rule, symbol, condition, result;
+  // size_t found = input.find("->");
+  // if(found != string::npos){
+  //   rule = input.substr(0,found);
+  //   result = input.substr(found+2);
+  //   found = rule.find(":");
+  //   if(found != string::npos){
+  //     symbol = rule.substr(0,found);
+  //     condition = rule.substr(found+1);
+  //     cout << symbol << " : " << condition << " -> " << result << endl;
+  //   } else {
+  //     cout << "token \":\" not found..." << endl;  
+  //   }
+  // } else {
+  //   cout << "token \"->\" not found..." << endl;
+  //   return 0;
+  // }
 
   // string filename;
   // if(argc > 1){
