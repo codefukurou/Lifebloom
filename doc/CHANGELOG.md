@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 ## [0.1.2] Standardised Turtle Symbols
 
+### 2018-14-07 (9:30PM - UTC+10H)
+- Created class `Token` to handle tokens for mathematical expressions.
+- Implemented tokenizer for mathematical expressions stored as strings.
+- Started planning implementation of shunting yard algorithm for parametric grammar functionality.
+
+## [0.1.2] Standardised Turtle Symbols
+
 ### 2018-10-07 (9:10PM - UTC+10H)
 
 - Class `Turtle` is now abstract and is accompanied by two polymorphic classes `TurtleCartesian2D` and `TurtleCartesian3D` which are tuned to handle 2D and 3D instruction sets respectively (3D is currently not functional but will be resolved towards the end of `0.1.x` or at the start of `0.2.x`).

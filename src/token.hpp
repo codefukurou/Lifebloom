@@ -1,5 +1,4 @@
-
-// main.cpp - Main entry point for program
+// token.hpp - Token class for mathematical expressions
 // Copyright (C) 2018 Benjamin Lewis
 
 // This program is free software: you can redistribute it and/or modify
@@ -15,31 +14,42 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "turtle.hpp"
-#include "canvas.hpp"
-#include "token.hpp"
-#include <regex>
-#include <vector>
+#include <map>
 #include <string>
-#include <sstream>
+#include <vector>
+#include <array>
+#include <cstdint>
+#include <algorithm>
+#include <cctype>
+#include <regex>
+#include <functional>
+#include <iostream>
 
 using namespace std;
+typedef unsigned int uint;
 
-int main( int argc, char **argv )
-{
-  // glutInit( &argc, argv );
+enum TOKEN_TYPE{
+  UNDEFINED = -1,
+  LITERAL,
+  VARIABLE,
+  OPERATOR,
+  LEFT_PARENTHESIS,
+  RIGHT_PARENTHESIS,
+  DELIMETER,
+  FUNCTION
+};
 
-  string input;
-  if(argc > 1){
-    input = argv[1];
-  }else{
-    return 0;
-  }
+class Token{
+public:
+  Token();
+  Token(TOKEN_TYPE type, string value);
 
-  vector<Token*> token_list = tokenizeExpression(input);
+  friend ostream& operator<<(ostream& os, const Token& token);  
 
-  for(Token* t: token_list){
-    cout << *t << endl;
-  }
-  return 0;
-}
+private:
+  TOKEN_TYPE m_type;
+  string m_value;  
+
+};
+
+vector<Token*> tokenizeExpression(string expr);

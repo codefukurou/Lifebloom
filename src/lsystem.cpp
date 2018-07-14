@@ -95,14 +95,14 @@ void LSystem::loadFile(const string& filename){
     assert(letter.name.GetStringLength() == 1);
     assert(letter.value.IsObject());
     for (auto& action: letter.value.GetObject()){
-      char c = letter.name.GetString()[0];
-      string label = action.name.GetString();
-      double param;
-      if(action.value.IsBool()){
-        param = (double) action.value.GetBool();
-      }else{
-        param = action.value.GetFloat();
-      }
+      // char c = letter.name.GetString()[0];
+      // string label = action.name.GetString();
+      // double param;
+      // if(action.value.IsBool()){
+        // param = (double) action.value.GetBool();
+      // }else{
+        // param = action.value.GetFloat();
+      // }
       // m_turtle.addFunction(c, label, param);
     }
   }
