@@ -42,14 +42,20 @@ enum TOKEN_TYPE{
 class Token{
 public:
   Token();
-  Token(TOKEN_TYPE type, string value);
+  Token(const TOKEN_TYPE& type, const string& label, const double& value);
+  TOKEN_TYPE getType();
+  string getLabel();
+  double getValue();
+  void setType(const TOKEN_TYPE& type);
+  void setLabel(const string& label);
+  void setValue(const double& value);
 
   friend ostream& operator<<(ostream& os, const Token& token);  
 
 private:
   TOKEN_TYPE m_type;
-  string m_value;  
+  string m_label;
+  double m_value;  
 
 };
 
-vector<Token*> tokenizeExpression(string expr);

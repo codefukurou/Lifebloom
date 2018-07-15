@@ -17,7 +17,7 @@
 
 #include "turtle.hpp"
 #include "canvas.hpp"
-#include "token.hpp"
+#include "expression.hpp"
 #include <regex>
 #include <vector>
 #include <string>
@@ -36,10 +36,17 @@ int main( int argc, char **argv )
     return 0;
   }
 
-  vector<Token*> token_list = tokenizeExpression(input);
-
-  for(Token* t: token_list){
+  Expression expr(input);
+  cout << "INFIX NOTATION" << endl;
+  for(Token* t: expr.m_token_list){
     cout << *t << endl;
   }
+
+  expr.convertRPN();
+  cout << "POSTFIX NOTATION" << endl;
+  for(Token* t: expr.m_token_list){
+    cout << *t << endl;
+  }
+  
   return 0;
 }
