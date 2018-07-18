@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ## [0.1.3] Extended Grammars
 
+### 2018-18-07 (12:40PM - UTC+10H)
+- Modified class `Expression` to store tokens only in RPN.
+- Class `Expression` can now evaluate simple mathematical expressions, with logical expressions under development.
+- Variables for tokens can now be allocated post construction for class `Expression` allowing symbolic mathematical expressions.
+
 ### 2018-14-07 (2:00PM - UTC+10H)
 - Created class `Expression` to handle mathematical expression processes. (Method `convertRPN` **unfinished**).
 - Added properties for token functions and operators.

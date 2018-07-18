@@ -27,45 +27,15 @@ Expression::Expression(const string& expr){
   tokenizeExpression(expr);
 }
 
-// void Expression::setVariable(const string& name, const string& value){
-// }
-  
-void Expression::convertRPN(){
-  vector<Token*> output;
-  vector<Token*>::iterator it = m_token_list.begin();
-  while(it != m_token_list.end()){
-    TOKEN_TYPE type = (*it)->getType();
-    if(type==LITERAL||type==VARIABLE){
-      output.push_back(*it);
-    }else if(type==FUNCTION){
-      m_token_stack.push(*it);
-    }else if(type==OPERATOR){
-      while(
-          ( (m_token_stack.top()->getType() == FUNCTION) ||
-            (m_operator_properties[m_token_stack.top()->getLabel()].precedence > m_operator_properties[(*it)->getLabel()].precedence) ||
-            (m_operator_properties[m_token_stack.top()->getLabel()].precedence == m_operator_properties[(*it)->getLabel()].precedence && m_operator_properties[m_token_stack.top()->getLabel()].is_left_associative)) 
-            && (m_token_stack.top()->getType() == LEFT_PARENTHESIS) ){
-          output.push_back(m_token_stack.top());
-          m_token_stack.pop();
-        }
-      m_token_stack.push(*it);
-    }else if(type==LEFT_PARENTHESIS){
-      m_token_stack.push(*it);
-    }else if(type==RIGHT_PARENTHESIS){
-      while(m_token_stack.top()->getType() != LEFT_PARENTHESIS){
-        output.push_back(m_token_stack.top());
-        m_token_stack.pop();
-      }
-      output.push_back(m_token_stack.top());
-      m_token_stack.pop();
+void Expression::setVariable(const string& name, const string& value){
+  string::size_type sz;
+  for(Token* t: m_postfix_tokens){
+    if(t->getType()==VARIABLE && t->getLabel()==name){
+      t->setType(LITERAL);
+      t->setLabel("#");
+      t->setValue(stod(value,&sz));
     }
-    ++it;
   }
-  while(!m_token_stack.empty()){
-    output.push_back(m_token_stack.top());
-    m_token_stack.pop();
-  }
-  m_token_list = output;
 }
 
 void Expression::initializeProperties(){
@@ -119,35 +89,55 @@ void Expression::initializeProperties(){
     true,
     2,
     [&](){
-      return m_arg_memory[0] + m_arg_memory[1];
+      return m_arg_memory[1] + m_arg_memory[0];
   }};
   m_operator_properties["-"] = {
     true,
     2,
     [&](){
-      return m_arg_memory[0] - m_arg_memory[1];
+      return m_arg_memory[1] - m_arg_memory[0];
   }};
   m_operator_properties["*"] = {
     true,
     3,
     [&](){
-      return m_arg_memory[0] * m_arg_memory[1];
+      return m_arg_memory[1] * m_arg_memory[0];
   }};
   m_operator_properties["/"] = {
     true,
     3,
     [&](){
-      return m_arg_memory[0] / m_arg_memory[1];
+      return m_arg_memory[1] / m_arg_memory[0];
   }};
   m_operator_properties["^"] = {
     false,
     4,
     [&](){
-      return pow(m_arg_memory[0], m_arg_memory[1]);
+      return pow(m_arg_memory[1], m_arg_memory[0]);
+  }};
+  m_operator_properties["&"] = {
+    true,
+    3,
+    [&](){
+      return (m_arg_memory[1]) && (m_arg_memory[0]);
+  }};
+  m_operator_properties["|"] = {
+    true,
+    2,
+    [&](){
+      return (m_arg_memory[1]) || (m_arg_memory[0]);
+  }};
+  m_operator_properties["="] = {
+    true,
+    1,
+    [&](){
+      return m_arg_memory[1] == m_arg_memory[0];
   }};
 }
 
 void Expression::tokenizeExpression(string expr){
+  vector<Token*> infix_tokens;
+
   string letter_buffer = "";
   string number_buffer = "";
 
@@ -181,9 +171,9 @@ void Expression::tokenizeExpression(string expr){
 
   function<void()> clearLetterBuffer = [&](){
     for(string::iterator it = letter_buffer.begin(); it != letter_buffer.end(); ++it){
-      m_token_list.push_back(new Token(VARIABLE, string(it, it+1), 0));
+      infix_tokens.push_back(new Token(VARIABLE, string(it, it+1), 0));
       if(it + 1 != letter_buffer.end()){
-        m_token_list.push_back(new Token(OPERATOR, "*", 0));
+        infix_tokens.push_back(new Token(OPERATOR, "*", 0));
       }
     }
     letter_buffer = "";
@@ -192,7 +182,7 @@ void Expression::tokenizeExpression(string expr){
   function<void()> clearNumberBuffer = [&](){
     if(number_buffer.length()){
       string::size_type sz;
-      m_token_list.push_back(new Token(LITERAL, "#", stod(number_buffer, &sz)));
+      infix_tokens.push_back(new Token(LITERAL, "#", stod(number_buffer, &sz)));
       number_buffer = "";
     }
   };
@@ -206,30 +196,30 @@ void Expression::tokenizeExpression(string expr){
     }else if((c>='a'&&c<='z')||(c>='A'&&c<='Z')){      
       if(number_buffer.length()){
         clearNumberBuffer();
-        m_token_list.push_back(new Token(OPERATOR, "*", 0));
+        infix_tokens.push_back(new Token(OPERATOR, "*", 0));
       }
       letter_buffer.push_back(c);
     }else if(isOperator(c)){
       clearNumberBuffer();
       clearLetterBuffer();
-      m_token_list.push_back(new Token(OPERATOR, string(1,c), 0));
+      infix_tokens.push_back(new Token(OPERATOR, string(1,c), 0));
     }else if(isLeftParenthesis(c)){
       if(letter_buffer.length()){
-        m_token_list.push_back(new Token(FUNCTION, letter_buffer, 0));
+        infix_tokens.push_back(new Token(FUNCTION, letter_buffer, 0));
         letter_buffer="";
       }else if(number_buffer.length()){
         clearNumberBuffer();
-        m_token_list.push_back(new Token(OPERATOR, "*", 0));
+        infix_tokens.push_back(new Token(OPERATOR, "*", 0));
       }
-      m_token_list.push_back(new Token(LEFT_PARENTHESIS, string(1,c), 0));
+      infix_tokens.push_back(new Token(LEFT_PARENTHESIS, string(1,c), 0));
     }else if(isRightParenthesis(c)){
       clearLetterBuffer();
       clearNumberBuffer();
-      m_token_list.push_back(new Token(RIGHT_PARENTHESIS, string(1,c), 0));
+      infix_tokens.push_back(new Token(RIGHT_PARENTHESIS, string(1,c), 0));
     }else if(isComma(c)){
       clearNumberBuffer();
       clearLetterBuffer();
-      m_token_list.push_back(new Token(DELIMETER, string(1,c), 0));
+      infix_tokens.push_back(new Token(DELIMETER, string(1,c), 0));
     }
   }
 
@@ -240,4 +230,69 @@ void Expression::tokenizeExpression(string expr){
   if(letter_buffer.length()){
     clearLetterBuffer();
   }
+
+  stack<Token*> token_stack;
+  vector<Token*>::iterator it = infix_tokens.begin();
+  while(it != infix_tokens.end()){
+    TOKEN_TYPE type = (*it)->getType();
+    if(type==LITERAL||type==VARIABLE){
+      m_postfix_tokens.push_back(*it);
+    }else if(type==FUNCTION){
+      token_stack.push((*it));
+    }else if(type==OPERATOR){
+      while(
+          !token_stack.empty() &&         
+          (
+            (
+              (token_stack.top()->getType() == FUNCTION) ||
+              (m_operator_properties[token_stack.top()->getLabel()].precedence > m_operator_properties[(*it)->getLabel()].precedence) ||
+              (m_operator_properties[token_stack.top()->getLabel()].precedence == m_operator_properties[(*it)->getLabel()].precedence && m_operator_properties[token_stack.top()->getLabel()].is_left_associative)
+            ) && 
+              (token_stack.top()->getType() != LEFT_PARENTHESIS)
+          ))
+      {
+        m_postfix_tokens.push_back(token_stack.top());
+        token_stack.pop();
+      }
+      token_stack.push(*it);
+    }else if(type==LEFT_PARENTHESIS){
+      token_stack.push(*it);
+    }else if(type==RIGHT_PARENTHESIS){
+      while(token_stack.top()->getType() != LEFT_PARENTHESIS){
+        m_postfix_tokens.push_back(token_stack.top());
+        token_stack.pop();
+      }
+      token_stack.pop();
+    }
+    ++it;
+  }
+  while(!token_stack.empty()){
+    m_postfix_tokens.push_back(token_stack.top());
+    token_stack.pop();
+  }
+}
+
+double Expression::evaluate(){
+  stack<double> value_stack;
+  TOKEN_TYPE type;
+  for(Token* t: m_postfix_tokens){
+    type = t->getType();
+    if(type==LITERAL){
+      value_stack.push(t->getValue());
+    }else if(type==FUNCTION){
+      for(unsigned int i = 0; i < (unsigned int)m_function_properties[t->getLabel()].num_args; ++i){
+        m_arg_memory[i] = value_stack.top();
+        value_stack.pop();
+      }
+      value_stack.push(m_function_properties[t->getLabel()].func());
+    }else if(type==OPERATOR){
+      for(unsigned int i = 0; i < 2; ++i){
+        m_arg_memory[i] = value_stack.top();
+        value_stack.pop();
+      }
+      value_stack.push(m_operator_properties[t->getLabel()].func());
+    }
+
+  }
+  return value_stack.top();
 }

@@ -26,10 +26,11 @@ class Expression{
 public:
   Expression();
   Expression(const string& expr);
-  // void setVariable(const string& name, const string& value);
-  void convertRPN();
+  void setVariable(const string& name, const string& value);
+  void tokenizeExpression(string expr);
+  double evaluate();
 
-// private:
+private:
   struct FunctionProperties{
     int num_args;
     function<double()> func;
@@ -43,11 +44,9 @@ public:
 
   map<string,FunctionProperties> m_function_properties;
   map<string,OperatorProperties> m_operator_properties;
-  vector<Token*> m_token_list;
-  stack<Token*> m_token_stack;
+  vector<Token*> m_postfix_tokens;
   array<double,2> m_arg_memory;
 
   void initializeProperties();
-  void tokenizeExpression(string expr);
 
 };

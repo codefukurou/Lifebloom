@@ -25,6 +25,29 @@
 
 using namespace std;
 
+
+
+// class Construction{
+// public:
+//   Construction();
+
+// private:
+//   struct Symbol{
+//     char label;
+//     vector<double> args;
+//   };
+
+//   char m_target_label;
+//   char m_left_label;
+//   char m_right_label;
+
+//   Expression conditon;
+  
+//   Symbol* m_target;
+//   Symbol* m_left;
+//   Symbol* m_right;
+// };
+
 int main( int argc, char **argv )
 {
   // glutInit( &argc, argv );
@@ -36,17 +59,10 @@ int main( int argc, char **argv )
     return 0;
   }
 
-  Expression expr(input);
-  cout << "INFIX NOTATION" << endl;
-  for(Token* t: expr.m_token_list){
-    cout << *t << endl;
-  }
+  Expression condition(input);
 
-  expr.convertRPN();
-  cout << "POSTFIX NOTATION" << endl;
-  for(Token* t: expr.m_token_list){
-    cout << *t << endl;
-  }
-  
+  cout << condition.evaluate() << endl;
+  cout << (0.0 || 1.0 || 0.0) << endl;
+
   return 0;
 }
