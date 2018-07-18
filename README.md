@@ -1,12 +1,12 @@
-# **lsystem** - L-System Generator
+# **Lifebloom** - L-System Generator
 
-**lsystem** is a hobby project that aims to create a unique and flexible interface for creating [Lindenmayer systems](https://en.wikipedia.org/wiki/L-system) (L-systems) using C++ and OpenGL. The purpose of this project is sharpen the programming skills of those involved and casually explore the visual beauty of L-systems.
+**Lifebloom** is a hobby project that aims to create a unique and flexible interface for creating [Lindenmayer systems](https://en.wikipedia.org/wiki/L-system) (L-systems) using C++ and OpenGL. The purpose of this project is sharpen the programming skills of those involved and casually explore the visual beauty of L-systems.
 
 ![](screenshots/twin_dragon_01.png)
 
 ## Getting Started
 
-**lsystem** is currently being developed on a Linux environment. Compatibility with Windows and MacOS is currently untested. To build the project make sure you have the prerequisites listed below and simply run the [makefile](makefile) in the root directory. For usage details see [USEAGE.md](docs/USAGE.md).
+**Lifebloom** is currently being developed on a Linux environment. Compatibility with Windows and MacOS is currently untested. To build the project make sure you have the prerequisites listed below and simply run the [makefile](makefile) in the root directory. For usage details see [USEAGE.md](docs/USAGE.md).
 
 ### Prerequisites
 
