@@ -1,0 +1,19 @@
+#name	Mycelis Muralis - Model III 
+#type	cartesian-3D
+#incl	K "C:\Users\Benjamin Lewis\Documents\thing.3dm"
+#level	10
+#axiom	I(20)FA(0)
+#rule	S<A(t) :  *  :  *  : TVK
+#rule	V<A(t) :  *  :  *  : TVK
+#rule	  A(t) : t>0 : 0.4 : A(t-1)
+#rule	  A(t) : t>0 : 0.6 : A(t)
+#rule	  A(t) : t=0 :  *  : M[+(30)G]F/(180)A(2)
+#rule	S<M    :  *  :  *  : S
+#rule	  S>T  :  *  :  *  : T
+#rule	T<G    :  *  :  *  : FA(2)
+#rule	V<M    :  *  :  *  : M
+#rule	  T>V  :  *  :  *  : W
+#rule	  W    :  *  :  *  : V
+#rule	  I(t) : t>0 : 0.4 : I(t-1)
+#rule	  I(t) : t>0 : 0.6 : I(t)
+#rule	  I(t) : t=0 :  *  : S

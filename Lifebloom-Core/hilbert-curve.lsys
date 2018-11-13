@@ -1,0 +1,12 @@
+#name	Hilbert Curve #1 
+#type	cartesian-2D
+
+#set	+ 90
+#set	- 90
+#ignore	<>ZLQ
+
+#level	5
+#axiom	X
+
+#rule	X : +YF-XFX-FY+
+#rule	Y : -XF+YFY+FX-

@@ -1,0 +1,20 @@
+{
+  "name": "Peano Curve",
+  "type": "cartesian-2d",
+  "axiom": "F",
+  "level": 4,
+  "rules": {
+      "F": "F+F-F-F-F+F+F+F-F"
+  },
+  "functions": {
+      "F": {
+          "draw": true
+      },
+      "+": {
+          "theta": 90.0
+      },
+      "-": {
+          "theta": -90.0
+      }
+  }
+}       

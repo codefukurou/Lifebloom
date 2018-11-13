@@ -1,0 +1,13 @@
+﻿<Window x:Class="Lifebloom_GUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:local="clr-namespace:Lifebloom_GUI"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <!--<TextEditor  Name="textEditor" FontFamily="Consolas" SyntaxHighlighting="C#" FontSize="10pt"/>-->
+    </Grid>
+</Window>

@@ -1,0 +1,21 @@
+{
+  "name": "Hilbert Curve 1",
+  "type": "cartesian-2d",
+  "axiom": "X",
+  "level": 6,
+  "rules": {
+      "X": "+YF-XFX-FY+",
+      "Y": "-XF+YFY+FX-"
+  },
+  "functions": {
+      "F": {
+          "draw": true
+      },
+      "+": {
+          "theta": 90.0
+      },
+      "-": {
+          "theta": -90.0
+      }
+  }
+}       

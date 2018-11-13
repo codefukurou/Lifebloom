@@ -1,0 +1,15 @@
+C:\Users\Benjamin Lewis\Documents\GitHub\Lifebloom\Lifebloom-GUI\bin\Debug\Lifebloom-GUI.exe.config
+C:\Users\Benjamin Lewis\Documents\GitHub\Lifebloom\Lifebloom-GUI\bin\Debug\Lifebloom-GUI.exe
+C:\Users\Benjamin Lewis\Documents\GitHub\Lifebloom\Lifebloom-GUI\bin\Debug\Lifebloom-GUI.pdb
+C:\Users\Benjamin Lewis\Documents\GitHub\Lifebloom\Lifebloom-GUI\obj\Debug\Lifebloom-GUI.csprojAssemblyReference.cache
+C:\Users\Benjamin Lewis\Documents\GitHub\Lifebloom\Lifebloom-GUI\obj\Debug\MainWindow.g.cs
+C:\Users\Benjamin Lewis\Documents\GitHub\Lifebloom\Lifebloom-GUI\obj\Debug\App.g.cs
+C:\Users\Benjamin Lewis\Documents\GitHub\Lifebloom\Lifebloom-GUI\obj\Debug\Lifebloom-GUI_MarkupCompile.cache
+C:\Users\Benjamin Lewis\Documents\GitHub\Lifebloom\Lifebloom-GUI\obj\Debug\Lifebloom-GUI_MarkupCompile.lref
+C:\Users\Benjamin Lewis\Documents\GitHub\Lifebloom\Lifebloom-GUI\obj\Debug\MainWindow.baml
+C:\Users\Benjamin Lewis\Documents\GitHub\Lifebloom\Lifebloom-GUI\obj\Debug\Lifebloom-GUI.g.resources
+C:\Users\Benjamin Lewis\Documents\GitHub\Lifebloom\Lifebloom-GUI\obj\Debug\Lifebloom_GUI.Properties.Resources.resources
+C:\Users\Benjamin Lewis\Documents\GitHub\Lifebloom\Lifebloom-GUI\obj\Debug\Lifebloom-GUI.csproj.GenerateResource.cache
+C:\Users\Benjamin Lewis\Documents\GitHub\Lifebloom\Lifebloom-GUI\obj\Debug\Lifebloom-GUI.csproj.CoreCompileInputs.cache
+C:\Users\Benjamin Lewis\Documents\GitHub\Lifebloom\Lifebloom-GUI\obj\Debug\Lifebloom-GUI.exe
+C:\Users\Benjamin Lewis\Documents\GitHub\Lifebloom\Lifebloom-GUI\obj\Debug\Lifebloom-GUI.pdb
